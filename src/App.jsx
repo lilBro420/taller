@@ -389,8 +389,11 @@ export default function App() {
                     </p>
                   </div>
 
+                  {/* Galería / Carrusel de fotos de taller */}
+                  <WorkshopGallery />
+
                   {/* Tarjeta destacada */}
-                  <div className="card-action" style={{ background: '#f0f7fc', border: '1px solid var(--border)', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '10px', boxShadow: 'none' }}>
+                  <div className="card-action" style={{ background: '#f0f7fc', border: '1px solid var(--border)', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '10px', boxShadow: 'none', marginTop: '20px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <div className="card-action__icon" style={{ display: 'flex', alignItems: 'center' }}>
                         <img src={gridIcon} alt="" className="card-icon-svg" style={{ width: '32px', height: '32px' }} />
@@ -411,9 +414,6 @@ export default function App() {
                       Iniciar cotización
                     </button>
                   </div>
-
-                  {/* Galería / Carrusel de fotos de taller */}
-                  <WorkshopGallery />
                 </div>
 
                 {/* ── Columna derecha: precios orientativos ── */}
