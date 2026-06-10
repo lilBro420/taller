@@ -1,0 +1,142 @@
+/* =====================================================
+   IMAGE CAROUSEL
+   ===================================================== */
+
+.carousel {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #0d1a26;
+  aspect-ratio: 16 / 9;
+  box-shadow: 0 6px 24px rgba(4, 67, 130, 0.18);
+  user-select: none;
+}
+
+/* ── Track & imagen ── */
+.carousel__track {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.carousel__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.32s ease, transform 0.32s ease;
+}
+
+/* Animación slide-in según dirección */
+.carousel__track--animating.carousel__track--next  .carousel__img {
+  animation: slideInNext 0.32s ease forwards;
+}
+.carousel__track--animating.carousel__track--prev  .carousel__img {
+  animation: slideInPrev 0.32s ease forwards;
+}
+
+@keyframes slideInNext {
+  from { opacity: 0; transform: translateX(40px) scale(1.03); }
+  to   { opacity: 1; transform: translateX(0)    scale(1);    }
+}
+@keyframes slideInPrev {
+  from { opacity: 0; transform: translateX(-40px) scale(1.03); }
+  to   { opacity: 1; transform: translateX(0)     scale(1);    }
+}
+
+/* Overlay degradado inferior */
+.carousel__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 55%,
+    rgba(4, 20, 50, 0.55) 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Botones prev/next ── */
+.carousel__btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.18s ease, transform 0.18s ease;
+  padding: 0;
+}
+
+.carousel__btn:hover {
+  background: rgba(255, 255, 255, 0.34);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.carousel__btn--prev { left: 10px;  }
+.carousel__btn--next { right: 10px; }
+
+/* ── Dots ── */
+.carousel__dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.carousel__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.carousel__dot--active {
+  background: #fff;
+  transform: scale(1.35);
+}
+
+/* ── Contador ── */
+.carousel__counter {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  z-index: 10;
+  letter-spacing: 0.05em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .carousel {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-md);
+  }
+  .carousel__btn {
+    width: 30px;
+    height: 30px;
+  }
+}
