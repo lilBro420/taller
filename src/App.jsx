@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Breadcrumb from './Breadcrumb';
 import VehicleSelector from './components/VehicleSelector';
+import NotFound from './components/NotFound';
 import {
   getVidriosPorCarroceria,
   NIVELES_TINTE,
@@ -198,22 +199,52 @@ const ORDEN_EMPTY = {
 };
 
 export default function App() {
-  const [vistaActual, setVistaActual]       = useState('inicio');
+  const getInitialView = () => {
+    const path = window.location.pathname;
+    if (path === '/') return 'inicio';
+    if (path === '/recepcion') return 'recepcion';
+    if (path === '/cotizacion') return 'cotizacion';
+    if (path === '/agradecimiento') return 'agradecimiento';
+    return 'notfound';
+  };
+
+  const [vistaActual, setVistaActual]       = useState(getInitialView);
   const [activeFaq, setActiveFaq]           = useState(null);
   const [vehicle, setVehicle]               = useState(VEHICLE_EMPTY);
   const [orden, setOrden]                   = useState(ORDEN_EMPTY);
   const [recepcionError, setRecepcionError] = useState('');
 
-  const navigate  = (v) => setVistaActual(v);
+  const navigate = (v) => {
+    setVistaActual(v);
+    const path = v === 'inicio' ? '/' : `/${v}`;
+    if (window.location.pathname !== path) {
+      window.history.pushState(null, '', path);
+    }
+  };
+
   const toggleFaq = (i) => setActiveFaq(a => (a === i ? null : i));
 
   const resetFlow = (targetView = 'inicio') => {
-    setVistaActual(targetView);
+    navigate(targetView);
     setVehicle(VEHICLE_EMPTY);
     setOrden(ORDEN_EMPTY);
     setRecepcionError('');
     setActiveFaq(null);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      if (path === '/') setVistaActual('inicio');
+      else if (path === '/recepcion') setVistaActual('recepcion');
+      else if (path === '/cotizacion') setVistaActual('cotizacion');
+      else if (path === '/agradecimiento') setVistaActual('agradecimiento');
+      else setVistaActual('notfound');
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // ── Selección de vidrios ─────────────────────────────────────────────────
 
@@ -305,6 +336,7 @@ export default function App() {
       case 'recepcion':      return [home, recepcion];
       case 'cotizacion':     return [home, recepcion, cotizacion];
       case 'agradecimiento': return [home, recepcion, cotizacion, gracias];
+      case 'notfound':       return [home, { label: 'Error 404' }];
       default:               return [home];
     }
   };
@@ -711,6 +743,11 @@ export default function App() {
                 </button>
               </div>
             </article>
+          )}
+
+          {/* Ruta comodín (*) / Fallback para rutas no existentes */}
+          {!['inicio', 'recepcion', 'cotizacion', 'agradecimiento'].includes(vistaActual) && (
+            <NotFound onNavigate={resetFlow} />
           )}
 
         </main>
