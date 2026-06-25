@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 
-import carDetails from './car_details.json';
-
 
 const ComboSelect = ({ label, options, value, onChange, placeholder = 'Selecciona...', disabled = false }) => {
   const [open, setOpen] = useState(false);
@@ -83,13 +81,35 @@ export const VehicleSelector = ({ onVehicleConfirmed }) => {
   const [model, setModel] = useState('');
   const [year, setYear] = useState('');
   const [body, setBody] = useState('');
+  const [carDetails, setCarDetails] = useState([]);
 
-  const brandOptions = useMemo(() => [...new Set(carDetails.map(e => e.brand))].sort().map(b => ({ value: b, label: b })), []);
+  useEffect(() => {
+    const loadCarDetails = async () => {
+      try {
+        const module = await import('./car_details.json');
+        setCarDetails(module.default);
+      } catch (error) {
+        console.error("Error al cargar los detalles del vehículo:", error);
+      }
+    };
+    loadCarDetails();
+  }, []);
+
+  const brandOptions = useMemo(() => {
+    if (!carDetails || carDetails.length === 0) return [];
+    return [...new Set(carDetails.map(e => e.brand))].sort().map(b => ({ value: b, label: b }));
+  }, [carDetails]);
+
   const modelOptions = useMemo(() => {
-    if (!brand) return [];
+    if (!brand || !carDetails || carDetails.length === 0) return [];
     return [...new Set(carDetails.filter(e => e.brand === brand).map(e => e.model))].sort().map(m => ({ value: m, label: m }));
-  }, [brand]);
-  const carEntry = useMemo(() => (brand && model ? carDetails.find(e => e.brand === brand && e.model === model) : null), [brand, model]);
+  }, [brand, carDetails]);
+
+  const carEntry = useMemo(() => {
+    if (!brand || !model || !carDetails || carDetails.length === 0) return null;
+    return carDetails.find(e => e.brand === brand && e.model === model);
+  }, [brand, model, carDetails]);
+
   const yearOptions = useMemo(() => {
     if (!carEntry) return [];
     const start = carEntry.production_year_start;
@@ -98,6 +118,7 @@ export const VehicleSelector = ({ onVehicleConfirmed }) => {
     for (let y = end; y >= start; y--) years.push({ value: String(y), label: String(y) });
     return years;
   }, [carEntry, CURRENT_YEAR]);
+
   const bodyOptions = useMemo(() => (carEntry?.body_styles || []).map(b => ({ value: b, label: b })), [carEntry]);
 
   const handleBrand = (v) => { setBrand(v); setModel(''); setYear(''); setBody(''); setStep(2); onVehicleConfirmed?.(null); };

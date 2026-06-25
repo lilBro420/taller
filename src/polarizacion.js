@@ -143,9 +143,12 @@ const VIDRIOS_POR_CARROCERIA = {
 /** Fallback para carrocerías no mapeadas: trato como Sedan */
 const FALLBACK_BODY = 'Sedan';
 
-export function getVidriosPorCarroceria(bodyStyle) {
-  return VIDRIOS_POR_CARROCERIA[bodyStyle]
-    ?? VIDRIOS_POR_CARROCERIA[FALLBACK_BODY];
+export async function getVidriosPorCarroceria(bodyStyle) {
+  return new Promise((resolve) => {
+    const res = VIDRIOS_POR_CARROCERIA[bodyStyle]
+      ?? VIDRIOS_POR_CARROCERIA[FALLBACK_BODY];
+    resolve(res);
+  });
 }
 
 // ── Niveles de tinte ────────────────────────────────────────────────────────
@@ -200,20 +203,28 @@ const MULTIPLICADOR_TINTE = {
   limousine:1.50,
 };
 
-export function calcularPrecioPieza(vidrio, nivelTinteId) {
-  const base = PRECIO_BASE_PIEZA(vidrio.id);
-  const mult = MULTIPLICADOR_TINTE[nivelTinteId] ?? 1;
-  return Math.round(base * mult);
+export async function calcularPrecioPieza(vidrio, nivelTinteId) {
+  return new Promise((resolve) => {
+    const base = PRECIO_BASE_PIEZA(vidrio.id);
+    const mult = MULTIPLICADOR_TINTE[nivelTinteId] ?? 1;
+    resolve(Math.round(base * mult));
+  });
 }
 
-export function calcularCotizacion(selecciones) {
+export async function calcularCotizacion(selecciones) {
   // selecciones: [{ vidrio, nivelTinteId }]
-  let subtotal = 0;
-  const desglose = selecciones.map(({ vidrio, nivelTinteId }) => {
-    const precio = calcularPrecioPieza(vidrio, nivelTinteId);
-    subtotal += precio;
+  const desglosePromises = selecciones.map(async ({ vidrio, nivelTinteId }) => {
+    const precio = await calcularPrecioPieza(vidrio, nivelTinteId);
     return { vidrio, nivelTinteId, precio };
   });
+
+  const desglose = await Promise.all(desglosePromises);
+
+  let subtotal = 0;
+  desglose.forEach(item => {
+    subtotal += item.precio;
+  });
+
   const manoObra = Math.round(selecciones.length * 150); // $150 por pieza de instalación
   const total = subtotal + manoObra;
   return { desglose, subtotal, manoObra, total };
@@ -221,11 +232,13 @@ export function calcularCotizacion(selecciones) {
 
 // ── Textos para la vista de "en proceso" ────────────────────────────────────
 
-export function tareasDeInstalacion(selecciones) {
-  // Retorna un array de tareas con su estado inicial
-  return selecciones.map(({ vidrio }, i) => ({
-    id: vidrio.id,
-    label: `Instalar polarizado en ${vidrio.label.toLowerCase()}`,
-    estado: i === 0 ? 'doing' : 'todo', // primera en proceso, resto pendientes
-  }));
+export async function tareasDeInstalacion(selecciones) {
+  return new Promise((resolve) => {
+    const res = selecciones.map(({ vidrio }, i) => ({
+      id: vidrio.id,
+      label: `Instalar polarizado en ${vidrio.label.toLowerCase()}`,
+      estado: i === 0 ? 'doing' : 'todo', // primera en proceso, resto pendientes
+    }));
+    resolve(res);
+  });
 }

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 
 const NotFound = () => {
   useEffect(() => {
-    // Cambia el título de la pestaña del navegador
     document.title = "404 - Página no encontrada";
   }, []);
 

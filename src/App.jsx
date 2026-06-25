@@ -248,9 +248,23 @@ export default function App() {
 
   // ── Selección de vidrios ─────────────────────────────────────────────────
 
-  const vidriosDisponibles = vehicle.carroceria
-    ? getVidriosPorCarroceria(vehicle.carroceria)
-    : [];
+  const [vidriosDisponibles, setVidriosDisponibles] = useState([]);
+
+  useEffect(() => {
+    const cargarVidrios = async () => {
+      if (vehicle.carroceria) {
+        try {
+          const vidrios = await getVidriosPorCarroceria(vehicle.carroceria);
+          setVidriosDisponibles(vidrios);
+        } catch (error) {
+          console.error("Error al cargar los vidrios de la carrocería:", error);
+        }
+      } else {
+        setVidriosDisponibles([]);
+      }
+    };
+    cargarVidrios();
+  }, [vehicle.carroceria]);
 
   const toggleVidrio = (vidrio) => {
     const existe = orden.selecciones.find(s => s.vidrio.id === vidrio.id);
@@ -272,7 +286,7 @@ export default function App() {
 
   // ── Avanzar a cotización ─────────────────────────────────────────────────
 
-  const handleIrACotizacion = (e) => {
+  const handleIrACotizacion = async (e) => {
     e.preventDefault();
     if (!vehicle.marca) {
       setRecepcionError('Primero selecciona el vehículo con el selector.');
@@ -283,9 +297,14 @@ export default function App() {
       return;
     }
     setRecepcionError('');
-    const cotizacion = calcularCotizacion(orden.selecciones);
-    setOrden(o => ({ ...o, cotizacion }));
-    navigate('cotizacion');
+    try {
+      const cotizacion = await calcularCotizacion(orden.selecciones);
+      setOrden(o => ({ ...o, cotizacion }));
+      navigate('cotizacion');
+    } catch (error) {
+      console.error("Error al calcular la cotización:", error);
+      setRecepcionError('Ocurrió un error al calcular la cotización. Inténtalo de nuevo.');
+    }
   };
 
   const handleEnviarAWhatsApp = () => {
