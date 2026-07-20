@@ -12,18 +12,15 @@ import carIcon from './assets/car (2).svg';
 import drillIcon from './assets/drill.svg';
 import gridIcon from './assets/grid-2x2.svg';
 import mapPinIcon from './assets/map-pin (1).svg';
-import phoneIcon from './assets/phone (1).svg';
 import searchIcon from './assets/search.svg';
 import './App.css';
 import './components/VehicleSelector.css';
 
-import taller1 from './components/taller1.png';
-import taller2 from './components/taller2.png';
-import taller3 from './components/taller3.png';
-import taller4 from './components/taller4.png';
-import taller5 from './components/taller5.png';
+import tallerIzquierda from './components/tallerIzquierda.jpeg';
+import tallerCentro from './components/tallerCentro.jpeg';
+import tallerDerecha from './components/TallerDerecha.jpeg';
 
-const tallerImages = [taller1, taller2, taller3, taller4, taller5];
+const tallerImages = [tallerIzquierda, tallerCentro, tallerDerecha];
 
 function WorkshopGallery() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -37,11 +34,9 @@ function WorkshopGallery() {
   }, []);
 
   const imageLabels = [
-    "Amplio taller con elevadores hidráulicos e iluminación industrial",
-    "Materiales de alta calidad y personal capacitado",
-    "Equipamiento de vanguardia para un polarizado impecable",
-    "Espacio limpio y climatizado para el curado óptimo de la película",
-    "Comprometidos con brindarte el mejor servicio y garantía"
+    "Instalaciones de vanguardia para un polarizado impecable",
+    "Materiales de alta calidad y personal altamente capacitado",
+    "Espacio limpio y climatizado para el curado óptimo de la película"
   ];
 
   return (
@@ -380,16 +375,12 @@ export default function App() {
         <div className="header__contact">
           <span>
             <img src={mapPinIcon} alt="" className="header-icon" />
-            Avenida Revolucion y 22
+            Callejon Félix Contreras y 22
           </span>
-          <a href="tel:6531112233" className="header__phone">
-            <img src={phoneIcon} alt="" className="header-icon" />
-            (+52) 653 111 2233
-          </a>
         </div>
       </header>
 
-      <Breadcrumb items={getBreadcrumbItems()} maxItems={5} />
+      {getBreadcrumbItems().length > 1 && <Breadcrumb items={getBreadcrumbItems()} maxItems={5} />}
 
       <div className="app__layout">
         <main className="app__main">
@@ -407,7 +398,7 @@ export default function App() {
                   
                   {/* Resumen de Calificación */}
                   <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', textAlign: 'center', boxShadow: 'var(--shadow-sm)' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: '600', marginTop: '4px' }}>Años de experiencia</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: '600', marginTop: '4px' }}> Mas de 25 Años de experiencia</span>
                     <span style={{ fontSize: '0.68rem', color: 'var(--text-hint)' }}>Miles de Clientes Satisfechos</span>
                   </div>
 
@@ -443,31 +434,35 @@ export default function App() {
                   {/* Galería / Carrusel de fotos de taller */}
                   <WorkshopGallery />
 
-                  {/* Tarjeta destacada */}
-                  <div className="card-action" style={{ background: '#f0f7fc', border: '1px solid var(--border)', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', gap: '10px', boxShadow: 'none', marginTop: '20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <div className="card-action__icon" style={{ display: 'flex', alignItems: 'center' }}>
-                        <img src={gridIcon} alt="" className="card-icon-svg" style={{ width: '32px', height: '32px' }} />
-                      </div>
+                  {/* FAQ en lugar de Tarjeta destacada */}
+                  <div className="landing__faq-area" style={{ marginTop: '28px', background: 'var(--surface)', borderRadius: '16px', border: '1px solid var(--border)', padding: '22px', boxShadow: 'var(--shadow-sm)' }}>
+                    <span className="col-section-title" style={{ fontSize: '0.75rem', letterSpacing: '0.1em', display: 'block', marginBottom: '12px' }}>PREGUNTAS FRECUENTES</span>
+                    <div className="faq-accordion">
+                      {[
+                        { q: '¿Cuánto tarda la instalación?',    a: 'Entre 1 y 3 horas según la cantidad de vidrios. Vidrios completos (6 piezas) en promedio 2.5 horas.' },
+                        { q: '¿Qué nivel de tinte es legal?',    a: 'El reglamento en Sonora permite hasta 35% en laterales traseros y luneta. El parabrisas delantero solo admite película UV transparente (70%). Te asesoramos en taller.' },
+                        { q: '¿Tiene garantía el polarizado?',   a: 'Sí. Garantía de por vida contra burbujas, decoloración y despegue de película en condiciones normales de uso.' },
+                        { q: '¿Puedo lavar el carro después?',   a: 'Recomendamos esperar 5 días antes del primer lavado interior de cristales para que el adhesivo cure completamente.' },
+                        { q: '¿Puedo elegir distintos tonos?',   a: 'Sí, en nuestro taller te asesoramos para asignar el nivel de tinte ideal (claro, medio, oscuro) a cada pieza según tus necesidades.' },
+                      ].map((faq, i) => {
+                        const isOpen = activeFaq === i;
+                        return (
+                          <div key={i} className={`faq-item${isOpen ? ' faq-item--open' : ''}`}>
+                            <button type="button" className="faq-item__trigger" onClick={() => toggleFaq(i)} aria-expanded={isOpen}>
+                              <span>{faq.q}</span>
+                              <span className="faq-item__arrow">{isOpen ? '−' : '+'}</span>
+                            </button>
+                            <div className="faq-item__panel" hidden={!isOpen}>
+                              <p>{faq.a}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                    <h3 style={{ fontSize: '1.15rem', fontWeight: 'bold', color: 'var(--brand-primary)', margin: '4px 0 0' }}>
-                      Nuevo Servicio de Polarizado
-                    </h3>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', margin: 0 }}>
-                      Registra tu vehículo y elige qué vidrios deseas polarizar con cotización inmediata.
-                    </p>
-                    <button
-                      type="button"
-                      className="btn btn--primary"
-                      onClick={() => { setVehicle(VEHICLE_EMPTY); setOrden(ORDEN_EMPTY); navigate('recepcion'); }}
-                      style={{ padding: '12px', fontSize: '0.95rem', fontWeight: 'bold', background: 'var(--brand-primary)', border: 'none', borderRadius: '8px', cursor: 'pointer', transition: 'background-color 0.2s', marginTop: '6px' }}
-                    >
-                      Iniciar cotización
-                    </button>
                   </div>
                 </div>
 
-                {/* ── Columna derecha: precios orientativos ── */}
+                {/* ── Columna derecha: precios orientativos (estáticos) ── */}
                 <div className="landing__col--right" style={{ padding: '24px 20px' }}>
                   <span className="col-section-title" style={{ fontSize: '0.75rem', letterSpacing: '0.1em' }}>PRECIOS ORIENTATIVOS</span>
                   {[
@@ -479,45 +474,16 @@ export default function App() {
                     { titulo: 'Paquete Van / Minivan',        rango: '$5,250 – $7,875', nota: '8 piezas + instalación' },
                   ].map((p, i) => (
                     <div
-                      className="price-card price-card--clickable"
+                      className="price-card"
                       key={i}
-                      onClick={() => { setVehicle(VEHICLE_EMPTY); setOrden(ORDEN_EMPTY); navigate('recepcion'); }}
-                      style={{ cursor: 'pointer', background: '#ffffff', marginBottom: '8px' }}
-                      title="Iniciar cotización"
+                      style={{ background: '#ffffff', marginBottom: '8px' }}
                     >
                       <h4>{p.titulo}</h4>
                       <div><span className="price-card__amount" style={{ color: 'var(--brand-primary)' }}>{p.rango}</span><span className="price-card__currency"> MXN</span></div>
                       {p.nota && <p className="price-card__note">{p.nota}</p>}
                     </div>
                   ))}
-                  <p className="price-disclaimer">Precios orientativos. El total exacto se calcula al elegir piezas y nivel de tinte en la cotización.</p>
-                </div>
-              </div>
-
-              {/* FAQ al fondo de la sección, ancho completo */}
-              <div className="landing__faq-area" style={{ marginTop: '20px', background: 'var(--surface)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border)', padding: '24px 30px', boxShadow: 'var(--shadow-sm)' }}>
-                <span className="col-section-title" style={{ fontSize: '0.75rem', letterSpacing: '0.1em' }}>PREGUNTAS FRECUENTES</span>
-                <div className="faq-accordion" style={{ marginTop: '12px' }}>
-                  {[
-                    { q: '¿Cuánto tarda la instalación?',    a: 'Entre 1 y 3 horas según la cantidad de vidrios. Vidrios completos (6 piezas) en promedio 2.5 horas.' },
-                    { q: '¿Qué nivel de tinte es legal?',    a: 'El reglamento en Sonora permite hasta 35% en laterales traseros y luneta. El parabrisas delantero solo admite película UV transparente (70%). Te asesoramos en taller.' },
-                    { q: '¿Tiene garantía el polarizado?',   a: 'Sí. Garantía de por vida contra burbujas, decoloración y despegue de película en condiciones normales de uso.' },
-                    { q: '¿Puedo lavar el carro después?',   a: 'Recomendamos esperar 5 días antes del primer lavado interior de cristales para que el adhesivo cure completamente.' },
-                    { q: '¿Puedo elegir distintos tonos?',   a: 'Sí, en nuestra cotización puedes asignar un nivel de tinte diferente a cada pieza según tus necesidades.' },
-                  ].map((faq, i) => {
-                    const isOpen = activeFaq === i;
-                    return (
-                      <div key={i} className={`faq-item${isOpen ? ' faq-item--open' : ''}`}>
-                        <button type="button" className="faq-item__trigger" onClick={() => toggleFaq(i)} aria-expanded={isOpen}>
-                          <span>{faq.q}</span>
-                          <span className="faq-item__arrow">{isOpen ? '−' : '+'}</span>
-                        </button>
-                        <div className="faq-item__panel" hidden={!isOpen}>
-                          <p>{faq.a}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
+                  <p className="price-disclaimer">Precios orientativos. Para una cotización formal y personalizada de tu vehículo, contáctanos directamente.</p>
                 </div>
               </div>
             </article>
@@ -772,19 +738,6 @@ export default function App() {
         </main>
       </div>
 
-      {/* ── WHATSAPP FAB ── */}
-      <a
-        href="https://wa.me/526531112233?text=Hola,%20quiero%20información%20sobre%20el%20polarizado%20de%20vidrios"
-        className="whatsapp-fab"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Contactar por WhatsApp"
-        title="Contactar al taller por WhatsApp"
-      >
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-        </svg>
-      </a>
 
       <footer className="app__footer">
         <p>© {new Date().getFullYear()} Taller de Polarizados El Javiercito — Servicio de Polarizado. Todos los derechos reservados.</p>

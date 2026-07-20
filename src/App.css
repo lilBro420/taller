@@ -2,11 +2,11 @@
    DESIGN TOKENS (actualizados)
    ===================================================== */
    :root {
-    --brand-primary:    #044382;      /* azul principal */
-    --brand-primary-dk: #0698c1;      /* azul cian oscuro */
-    --brand-primary-lt: #F6BEFF;      /* fondo claro suave */
-    --brand-primary-soft: #326cff;    /* azul intenso para acentos */
-    --brand-yellow:     #71c6ff;      /* azul claro (como amarillo sustituto) */
+    --brand-primary:    #d32f2f;      /* rojo principal */
+    --brand-primary-dk: #9a0007;      /* rojo oscuro */
+    --brand-primary-lt: #fff0f2;      /* fondo claro suave */
+    --brand-primary-soft: #ff1744;    /* rojo vibrante acento */
+    --brand-yellow:     #0b0b08;      /* dorado/amarillo acento */
   
     --surface:       #ffffff;
     --surface-alt:   #f4f7fa;
